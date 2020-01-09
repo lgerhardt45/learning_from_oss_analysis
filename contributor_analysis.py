@@ -5,15 +5,14 @@ from model.observation import Observation
 
 
 class ContributorAnalysis:
-
     _github_base_url = 'https://api.github.com'
     _api_token = ''
-    _observations = [Observation]
+    _observations: [Observation] = []
 
     def get(self, url: str):
 
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
-        print(response.status_code)
+        print('Getting', url)
 
         return response
 
@@ -61,7 +60,7 @@ class ContributorAnalysis:
 
         for contributor_repo in contributor_repos:
             language = None  # the repo's main programming language
-            topics = [str]   # the project's (self assigned) topics that commonly represent the used framework
+            topics = [str]  # the project's (self assigned) topics that commonly represent the used framework
 
             if 'topic' in contributor_repo.keys():  # if project has no topic, key doesn't exist
                 topics = (topic.lower() for topic in contributor_repo['topics'])
@@ -79,13 +78,14 @@ class ContributorAnalysis:
             else:
                 continue
 
-        return Observation(average_stars=0 if total_projects_in_domain == 0 else total_stargazers / total_projects_in_domain,
-                           nr_of_commits_to_project=no_contributor_commits,
-                           nr_of_projects_in_domain=total_projects_in_domain,
-                           employed_at_domain_owner=employed_at_project_owner,
-                           has_project_in_domain=True if total_projects_in_domain > 0 else False,
-                           domain_name=domain_name,
-                           domain_owner=organization_name)
+        return Observation(
+            average_stars=0 if total_projects_in_domain == 0 else total_stargazers / total_projects_in_domain,
+            nr_of_commits_to_project=no_contributor_commits,
+            nr_of_projects_in_domain=total_projects_in_domain,
+            employed_at_domain_owner=employed_at_project_owner,
+            has_project_in_domain=True if total_projects_in_domain > 0 else False,
+            domain_name=domain_name,
+            domain_owner=organization_name)
 
     def export_to_csv(self):
         print('Writing to csv')
@@ -124,9 +124,9 @@ class ContributorAnalysis:
                 # get data on contributors' repositories
                 for contributor_id, nr_commits in stats_contributor_nr_commits.items():
                     self._observations.append(self.get_observation_entity(user_name=contributor_id,
-                                                               domain_name=repo_name,
-                                                               organization_name=repo_owner,
-                                                               no_contributor_commits=nr_commits))
+                                                                          domain_name=repo_name,
+                                                                          organization_name=repo_owner,
+                                                                          no_contributor_commits=nr_commits))
 
         print('{} observations on {} projects'.format(len(self._observations), len(data.values())))
 
