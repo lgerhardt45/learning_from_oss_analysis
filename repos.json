@@ -1,4 +1,10 @@
 {
-  "swift": "apple/swift",
-  "flutter": "flutter/flutter"
+  "swift":  {
+    "repo_name": "swift",
+    "owner": "apple"
+  },
+  "flutter": {
+    "repo_name": "flutter",
+    "owner": "flutter"
+  }
 }
