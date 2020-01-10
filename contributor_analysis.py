@@ -23,7 +23,7 @@ class ContributorAnalysis:
         :returns the full response from `requests.get()`
         """
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
-        print('Getting %s, response code: %i' % url, response.status_code)
+        print('Getting %s, response code: %i' % (url, response.status_code))
 
         return response
 
@@ -55,7 +55,7 @@ class ContributorAnalysis:
     def get_observation_entity(self, user_name: str, domain_name: str, organization_name: str,
                                no_contributor_commits: int):
         """
-        via GET /users/:username/repos
+        via GET /users/:username/repos -> returns a list of dicts
         collects the necessary information for an Observation
         """
 
@@ -68,6 +68,11 @@ class ContributorAnalysis:
         total_stargazers = 0  # number of stars on repo
         total_projects_in_domain = 0
         employed_at_project_owner = False
+
+        repo_names = [repo['name'] for repo in contributor_repos]
+        print('checking repos {user_name}/{repo_names}'.format(
+            user_name=user_name, repo_names=repo_names
+        ))
 
         for contributor_repo in contributor_repos:
             language = None  # the repo's main programming language
