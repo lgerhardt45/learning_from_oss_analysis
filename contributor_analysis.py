@@ -68,9 +68,14 @@ class ContributorAnalysis:
         )
         contributor_repos = self.get(contributor_repos_url).json()
 
-        total_stargazers = 0  # number of stars on repo
+        # number of stars on repo
+        total_stargazers = 0
+        # counter for projects with that language/ framework
         total_projects_in_domain = 0
-        employed_at_project_owner = False
+        # is user employed at company
+        employed_at_project_owner = self.user_is_public_member_of_org(
+            user_id=user_name, organization_id=organization_name
+        )
 
         repo_names = [repo['name'] for repo in contributor_repos]
         print('checking repos {user_name}/{repo_names}'.format(
@@ -90,12 +95,7 @@ class ContributorAnalysis:
             if (domain_name is language and language is not None) or domain_name in topics:
                 total_projects_in_domain += 1
                 total_stargazers += contributor_repo['stargazers_count']
-                if not employed_at_project_owner:  # if already proven contributor is employed, save API call
-                    employed_at_project_owner = self.user_is_public_member_of_org(
-                        user_id=user_name, organization_id=organization_name
-                    )
-            else:
-                continue
+
         observation = Observation(
             average_stars=0 if total_projects_in_domain == 0 else total_stargazers / total_projects_in_domain,
             nr_of_commits_to_project=no_contributor_commits,
