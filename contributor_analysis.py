@@ -10,9 +10,8 @@ from model.observation import Observation
 class ContributorAnalysis:
     _github_base_url = 'https://api.github.com'
     _api_token = ''
-    _observations: [Observation] = []
     _output_file_path = 'observations.csv'
-    _slice_amount: int  # only first n observations for debugging purposes
+    _slice_amount = 0  # only first n observations for debugging purposes
 
     def take(self, n, iterable):
         """ Return first n items of the iterable as a list """
@@ -121,10 +120,11 @@ class ContributorAnalysis:
         print('setting up')
         # get config
         with open('config.json') as config:
+            config_json = json.load(config)
             # api_token for authorization
-            self._api_token = json.load(config)['api_token']
+            self._api_token = config_json['api_token']
             # only first n observations for debugging purposes
-            self._slice_amount = json.load(config)['debug_slice_amount']
+            self._slice_amount = config_json['debug_slice_amount']
             # setup output file
             self.setup_output_file()
         print('done setting up')
