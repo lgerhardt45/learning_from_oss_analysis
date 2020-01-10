@@ -94,19 +94,23 @@ class ContributorAnalysis:
         return observation
 
     def export_to_csv(self):
-        print('Writing to csv')
+        print('attempting to write output file')
+        try:
+            with open(self._output_file_path, mode='a') as csv:
+                if not self._observations:
+                    print('No observations gathered')
+                    return
 
-        with open(self._output_file_path, mode='a') as csv:
-            if not self._observations:
-                print('No observations gathered')
-                return
+                # write header
+                csv.write(self._observations[0].get_attribute_names_comma_delimited())
 
-            # write header
-            csv.write(self._observations[0].get_attribute_names_comma_delimited())
-
-            # write observations
-            for observation in self._observations:
-                csv.write(observation.get_values_comma_delimited())
+                # write observations
+                for observation in self._observations:
+                    csv.write(observation.get_values_comma_delimited())
+        except Exception as e:
+            print(e)
+            print('failed to write output file')
+            self.tear_down()
 
     def setup(self):
         print('setting up')
