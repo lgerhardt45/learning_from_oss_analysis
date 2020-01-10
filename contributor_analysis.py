@@ -13,6 +13,10 @@ class ContributorAnalysis:
 
     def get(self, url: str):
 
+        """
+        making GET requests adding authorization header
+        :returns the full response from `requests.get()`
+        """
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
         print('Getting', url)
 
