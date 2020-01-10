@@ -1,3 +1,6 @@
+import json
+
+
 class Observation:
     def __init__(self,
                  average_stars: float,
@@ -27,4 +30,4 @@ class Observation:
         return ','.join([str(value) for value in self.__dict__.values()])
 
     def __repr__(self):
-        return self.get_values_comma_delimited()
+        return '<Observation: %s>' % json.dumps(self.__dict__)

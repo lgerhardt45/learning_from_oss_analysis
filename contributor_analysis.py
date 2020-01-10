@@ -101,7 +101,7 @@ class ContributorAnalysis:
             has_project_in_domain=True if total_projects_in_domain > 0 else False,
             domain_name=domain_name,
             domain_owner=organization_name)
-        print('observation: %s' % repr(observation))
+        print(repr(observation))
         return observation
 
     def export_to_csv(self):
