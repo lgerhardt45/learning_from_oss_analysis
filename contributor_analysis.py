@@ -7,15 +7,69 @@ import requests
 from model.observation import Observation
 
 
-class ContributorAnalysis:
-    _github_base_url = 'https://api.github.com'
-    _api_token = ''
-    _output_file_path = 'observations.csv'
-    _slice_amount = 0  # only first n observations for debugging purposes
+# helper methods
+def take(n, iterable):
+    """ Return first n items of the iterable as a list """
+    return list(islice(iterable, n))
 
-    def take(self, n, iterable):
-        """ Return first n items of the iterable as a list """
-        return list(islice(iterable, n))
+
+class ContributorAnalysis:
+    _api_token: str
+    _output_file_path: str
+    _slice_amount: int
+    _github_base_url: str
+
+    def __init__(self):
+        self._github_base_url = 'https://api.github.com'
+        self.setup()
+
+    # UTILITY METHODS
+    def setup(self):
+        print('setting up')
+        # get config
+        with open('config.json') as config:
+            config_json = json.load(config)
+            # api_token for authorization
+            self._api_token = config_json['api_token']
+            # only first n observations for debugging purposes
+            self._slice_amount = config_json['debug_slice_amount']
+            # setup output file
+            self.setup_output_file()
+        print('done setting up')
+
+    def setup_output_file(self):
+        print('setting up output file')
+        if os.path.exists(self._output_file_path):
+            try:
+                os.remove(self._output_file_path)
+                print('removed old output file')
+            except IOError:
+                print('failed to remove old output file')
+                return
+
+        with open(self._output_file_path, mode='a') as csv:
+            try:
+                # write header
+                sample_observation_for_header = Observation(0.0, 0, 0, False, False, '', '')
+                csv.write(sample_observation_for_header.get_attribute_names_comma_delimited() + '\n')
+            except IOError:
+                print('Cannot write to output file')
+                sys.exit(1)
+
+    def export_observation_to_csv(self, observation: Observation):
+        try:
+            with open(self._output_file_path, mode='a') as csv:
+                csv.write(observation.get_values_comma_delimited() + '\n')
+        except IOError as e:
+            print(e)
+            print('failed to write %s to %s' % (repr(observation), self._output_file_path))
+            self.tear_down()
+
+    def tear_down(self):
+        print('tearing down')
+        if os.path.exists(self._output_file_path):
+            os.remove(self._output_file_path)
+            print('output file %s removed' % self._output_file_path)
 
     def get(self, url: str):
         """
@@ -30,6 +84,7 @@ class ContributorAnalysis:
 
         return response
 
+    # DATA COLLECTION METHODS
     def user_is_public_member_of_org(self, user_id: str, organization_id: str) -> bool:
         """ via GET /orgs/:org/public_members/:username"""
 
@@ -107,53 +162,6 @@ class ContributorAnalysis:
         print(repr(observation))
         return observation
 
-    def export_observation_to_csv(self, observation: Observation):
-        try:
-            with open(self._output_file_path, mode='a') as csv:
-                csv.write(observation.get_values_comma_delimited() + '\n')
-        except IOError as e:
-            print(e)
-            print('failed to write %s to %s' % (repr(observation), self._output_file_path))
-            self.tear_down()
-
-    def setup(self):
-        print('setting up')
-        # get config
-        with open('config.json') as config:
-            config_json = json.load(config)
-            # api_token for authorization
-            self._api_token = config_json['api_token']
-            # only first n observations for debugging purposes
-            self._slice_amount = config_json['debug_slice_amount']
-            # setup output file
-            self.setup_output_file()
-        print('done setting up')
-
-    def setup_output_file(self):
-        print('setting up output file')
-        if os.path.exists(self._output_file_path):
-            try:
-                os.remove(self._output_file_path)
-                print('removed old output file')
-            except IOError:
-                print('failed to remove old output file')
-                return
-
-        with open(self._output_file_path, mode='a') as csv:
-            try:
-                # write header
-                sample_observation_for_header = Observation(0.0, 0, 0, False, False, '', '')
-                csv.write(sample_observation_for_header.get_attribute_names_comma_delimited() + '\n')
-            except IOError:
-                print('Cannot write to output file')
-                sys.exit(1)
-
-    def tear_down(self):
-        print('tearing down')
-        if os.path.exists(self._output_file_path):
-            os.remove(self._output_file_path)
-            print('output file %s removed' % self._output_file_path)
-
     def run(self):
         self.setup()
 
@@ -170,7 +178,7 @@ class ContributorAnalysis:
                 stats_contributor_nr_commits = self.get_stats_contributors(repo_owner=repo_owner, repo_name=repo_name)
 
                 # get data on contributors' repositories
-                for contributor_id, nr_commits in self.take(self._slice_amount, stats_contributor_nr_commits.items()):
+                for contributor_id, nr_commits in take(self._slice_amount, stats_contributor_nr_commits.items()):
                     observation = self.get_observation_entity(user_name=contributor_id,
                                                               domain_name=repo_name,
                                                               organization_name=repo_owner,
@@ -179,7 +187,7 @@ class ContributorAnalysis:
                     self.export_observation_to_csv(observation=observation)
 
         print('done, opening output file...')
-        os.system('open %s' % self._output_file_path )
+        os.system('open %s' % self._output_file_path)
 
 
 if __name__ == '__main__':
