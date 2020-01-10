@@ -121,6 +121,9 @@ class ContributorAnalysis:
                 # write observations
                 for observation in self._observations:
                     csv.write(observation.get_values_comma_delimited() + '\n')
+
+            print('done writing output file, opening...')
+            os.system('open %s' % self._output_file_path)
         except Exception as e:
             print(e)
             print('failed to write output file')
@@ -162,7 +165,7 @@ class ContributorAnalysis:
         print('{} observations on {} projects'.format(len(self._observations), len(data.values())))
 
         self.export_to_csv()
-        print('>>> done')
+        print('done!')
 
 
 if __name__ == '__main__':
