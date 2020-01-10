@@ -108,11 +108,11 @@ class ContributorAnalysis:
                     return
 
                 # write header
-                csv.write(self._observations[0].get_attribute_names_comma_delimited())
+                csv.write(self._observations[0].get_attribute_names_comma_delimited() + '\n')
 
                 # write observations
                 for observation in self._observations:
-                    csv.write(observation.get_values_comma_delimited())
+                    csv.write(observation.get_values_comma_delimited() + '\n')
         except Exception as e:
             print(e)
             print('failed to write output file')
