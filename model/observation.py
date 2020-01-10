@@ -17,14 +17,14 @@ class Observation:
 
     def get_attribute_names_comma_delimited(self) -> str:
         """ returns all attribute names to be used for the header of the observations csv file"""
-        return ','.join(self.__dict__.keys())
+        return ','.join(self.__dict__.keys()) + '\n'
 
     def get_values_comma_delimited(self):
         """
         represents entity as comma-delimited string for writing to a csv file
         decimal separator is '.'
         """
-        return ','.join([str(value) for value in self.__dict__.values()])
+        return ','.join([str(value) for value in self.__dict__.values()]) + '\n'
 
     def __repr__(self):
         return self.get_values_comma_delimited()
