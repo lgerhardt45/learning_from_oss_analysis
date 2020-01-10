@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 
 from model.observation import Observation
@@ -8,6 +9,7 @@ class ContributorAnalysis:
     _github_base_url = 'https://api.github.com'
     _api_token = ''
     _observations: [Observation] = []
+    _output_file_path = 'observations.csv'
 
     def get(self, url: str):
 
@@ -90,7 +92,7 @@ class ContributorAnalysis:
     def export_to_csv(self):
         print('Writing to csv')
 
-        with open('observations.csv', mode='w') as csv:
+        with open(self._output_file_path, mode='a') as csv:
             if not self._observations:
                 print('No observations gathered')
                 return
