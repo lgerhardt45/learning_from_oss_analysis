@@ -11,7 +11,7 @@ class ContributorAnalysis:
     _api_token = ''
     _observations: [Observation] = []
     _output_file_path = 'observations.csv'
-    _slice_amount = 10  # only first n observations for debugging purposes
+    _slice_amount: int  # only first n observations for debugging purposes
 
     def take(self, n, iterable):
         """ Return first n items of the iterable as a list """
@@ -139,8 +139,15 @@ class ContributorAnalysis:
 
     def setup(self):
         print('setting up')
+        # get config
         with open('config.json') as config:
+            # api_token for authorization
             self._api_token = json.load(config)['api_token']
+            # only first n observations for debugging purposes
+            self._slice_amount = json.load(config)['debug_slice_amount']
+            # setup output file
+            self.setup_output_file()
+        print('done setting up')
 
     def tear_down(self):
         print('tearing down')

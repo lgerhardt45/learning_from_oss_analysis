@@ -1,3 +1,5 @@
 {
-  "api_token": ""
+  "api_token": "",
+  "output_file_name": "observations.csv",
+  "debug_slice_amount": 3
 }
