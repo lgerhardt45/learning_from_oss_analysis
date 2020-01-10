@@ -110,6 +110,14 @@ class ContributorAnalysis:
     def export_to_csv(self):
         print('attempting to write output file')
         try:
+            if os.path.exists(self._output_file_path):
+                try:
+                    os.remove(self._output_file_path)
+                    print('removed old output file')
+                except IOError:
+                    print('failed to remove old output file')
+                    return
+
             with open(self._output_file_path, mode='a') as csv:
                 if not self._observations:
                     print('No observations gathered')
