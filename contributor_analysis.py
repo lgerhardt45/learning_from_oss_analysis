@@ -1,5 +1,6 @@
 import json
 import os
+from itertools import islice
 import requests
 
 from model.observation import Observation
@@ -10,6 +11,11 @@ class ContributorAnalysis:
     _api_token = ''
     _observations: [Observation] = []
     _output_file_path = 'observations.csv'
+    _slice_amount = 10  # only first n observations for debugging purposes
+
+    def take(self, n, iterable):
+        """ Return first n items of the iterable as a list """
+        return list(islice(iterable, n))
 
     def get(self, url: str):
         """
@@ -139,7 +145,7 @@ class ContributorAnalysis:
                 stats_contributor_nr_commits = self.get_stats_contributors(repo_owner=repo_owner, repo_name=repo_name)
 
                 # get data on contributors' repositories
-                for contributor_id, nr_commits in stats_contributor_nr_commits.items():
+                for contributor_id, nr_commits in self.take(self._slice_amount, stats_contributor_nr_commits.items()):
                     self._observations.append(self.get_observation_entity(user_name=contributor_id,
                                                                           domain_name=repo_name,
                                                                           organization_name=repo_owner,
