@@ -12,13 +12,12 @@ class ContributorAnalysis:
     _output_file_path = 'observations.csv'
 
     def get(self, url: str):
-
         """
         making GET requests adding authorization header
         :returns the full response from `requests.get()`
         """
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
-        print('Getting', url)
+        print('Getting %s, response code: %i' % url, response.status_code)
 
         return response
 
@@ -83,8 +82,7 @@ class ContributorAnalysis:
                     )
             else:
                 continue
-
-        return Observation(
+        observation = Observation(
             average_stars=0 if total_projects_in_domain == 0 else total_stargazers / total_projects_in_domain,
             nr_of_commits_to_project=no_contributor_commits,
             nr_of_projects_in_domain=total_projects_in_domain,
@@ -92,6 +90,8 @@ class ContributorAnalysis:
             has_project_in_domain=True if total_projects_in_domain > 0 else False,
             domain_name=domain_name,
             domain_owner=organization_name)
+        print('observation: %s' % repr(observation))
+        return observation
 
     def export_to_csv(self):
         print('Writing to csv')
@@ -109,6 +109,7 @@ class ContributorAnalysis:
                 csv.write(observation.get_values_comma_delimited())
 
     def setup(self):
+        print('setting up')
         with open('config.json') as config:
             self._api_token = json.load(config)['api_token']
 
@@ -143,6 +144,7 @@ class ContributorAnalysis:
         print('{} observations on {} projects'.format(len(self._observations), len(data.values())))
 
         self.export_to_csv()
+        print('>>> done')
 
 
 if __name__ == '__main__':
