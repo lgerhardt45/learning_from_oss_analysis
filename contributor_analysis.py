@@ -106,6 +106,12 @@ class ContributorAnalysis:
         with open('config.json') as config:
             self._api_token = json.load(config)['api_token']
 
+    def tear_down(self):
+        print('tearing down')
+        if os.path.exists(self._output_file_path):
+            os.remove(self._output_file_path)
+            print('output file %s removed' % self._output_file_path)
+
     def run(self):
         self.setup()
 
