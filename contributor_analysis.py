@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from itertools import islice
 import requests
 
@@ -107,34 +108,13 @@ class ContributorAnalysis:
         print(repr(observation))
         return observation
 
-    def export_to_csv(self):
-        print('attempting to write output file')
+    def export_observation_to_csv(self, observation: Observation):
         try:
-            if os.path.exists(self._output_file_path):
-                try:
-                    os.remove(self._output_file_path)
-                    print('removed old output file')
-                except IOError:
-                    print('failed to remove old output file')
-                    return
-
             with open(self._output_file_path, mode='a') as csv:
-                if not self._observations:
-                    print('No observations gathered')
-                    return
-
-                # write header
-                csv.write(self._observations[0].get_attribute_names_comma_delimited() + '\n')
-
-                # write observations
-                for observation in self._observations:
-                    csv.write(observation.get_values_comma_delimited() + '\n')
-
-            print('done writing output file, opening...')
-            os.system('open %s' % self._output_file_path)
-        except Exception as e:
+                csv.write(observation.get_values_comma_delimited() + '\n')
+        except IOError as e:
             print(e)
-            print('failed to write output file')
+            print('failed to write %s to %s' % (repr(observation), self._output_file_path))
             self.tear_down()
 
     def setup(self):
@@ -148,6 +128,25 @@ class ContributorAnalysis:
             # setup output file
             self.setup_output_file()
         print('done setting up')
+
+    def setup_output_file(self):
+        print('setting up output file')
+        if os.path.exists(self._output_file_path):
+            try:
+                os.remove(self._output_file_path)
+                print('removed old output file')
+            except IOError:
+                print('failed to remove old output file')
+                return
+
+        with open(self._output_file_path, mode='a') as csv:
+            try:
+                # write header
+                sample_observation_for_header = Observation(0.0, 0, 0, False, False, '', '')
+                csv.write(sample_observation_for_header.get_attribute_names_comma_delimited() + '\n')
+            except IOError:
+                print('Cannot write to output file')
+                sys.exit(1)
 
     def tear_down(self):
         print('tearing down')
@@ -172,14 +171,14 @@ class ContributorAnalysis:
 
                 # get data on contributors' repositories
                 for contributor_id, nr_commits in self.take(self._slice_amount, stats_contributor_nr_commits.items()):
-                    self._observations.append(self.get_observation_entity(user_name=contributor_id,
-                                                                          domain_name=repo_name,
-                                                                          organization_name=repo_owner,
-                                                                          no_contributor_commits=nr_commits))
+                    observation = self.get_observation_entity(user_name=contributor_id,
+                                                              domain_name=repo_name,
+                                                              organization_name=repo_owner,
+                                                              no_contributor_commits=nr_commits)
+                    # write to output csv
+                    self.export_observation_to_csv(observation=observation)
 
-        print('{} observations on {} projects'.format(len(self._observations), len(data.values())))
-
-        self.export_to_csv()
+        print('total: {} observations on {} projects'.format(len(self._observations), len(data.values())))
         print('done!')
 
 
