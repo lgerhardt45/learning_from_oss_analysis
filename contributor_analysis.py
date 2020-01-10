@@ -24,6 +24,9 @@ class ContributorAnalysis:
         """
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
         print('Getting %s, response code: %i' % (url, response.status_code))
+        if not (response or response.status_code == 404):
+            # escape public org member request (returns 404) (not too nice)
+            print('Failed request: %s' % response)
 
         return response
 
