@@ -178,8 +178,8 @@ class ContributorAnalysis:
                     # write to output csv
                     self.export_observation_to_csv(observation=observation)
 
-        print('total: {} observations on {} projects'.format(len(self._observations), len(data.values())))
-        print('done!')
+        print('done, opening output file...')
+        os.system('open %s' % self._output_file_path )
 
 
 if __name__ == '__main__':
