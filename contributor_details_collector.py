@@ -1,7 +1,6 @@
 import requests
 from pprint import pprint
 
-from util import util
 from model.observation import Observation
 
 

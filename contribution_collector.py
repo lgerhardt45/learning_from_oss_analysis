@@ -1,7 +1,5 @@
 import json
-import requests
 
-from util import util
 from api.api import API
 
 

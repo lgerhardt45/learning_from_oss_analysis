@@ -1,28 +1,27 @@
 import os
 import sys
 
-from util import util
 from model.observation import Observation
 
 
-def export_observations_to_csv(observations: [Observation]):
+def export_observations_to_csv(observations: [Observation], output_file_path: str):
     if not observations:
         raise Exception('No observations found.')
-    setup_output_file(sample_observation=observations[0])
-    write_observations_to_csv(observations=observations)
+    _setup_output_file(sample_observation=observations[0], output_file_path=output_file_path)
+    _write_observations_to_csv(observations=observations)
 
 
-def setup_output_file(sample_observation):
+def _setup_output_file(sample_observation: Observation, output_file_path: str):
     print('setting up output file')
-    if os.path.exists(util.output_file_path):
+    if os.path.exists(output_file_path):
         try:
-            os.remove(util.output_file_path)
+            os.remove(output_file_path)
             print('removed old output file')
         except IOError:
             print('failed to remove old output file')
             return
 
-    with open(util.output_file_path, mode='a') as csv_file:
+    with open(output_file_path, mode='a') as csv_file:
         try:
             # write header
             csv_file.write(sample_observation.get_attribute_names_comma_delimited() + '\n')
@@ -32,8 +31,8 @@ def setup_output_file(sample_observation):
             sys.exit(1)
 
 
-def write_observations_to_csv(observations: [Observation]):
-    with open(util.output_file_path, mode='a') as csv_file:
+def _write_observations_to_csv(observations: [Observation]):
+    with open(output_file_path, mode='a') as csv_file:
         for observation in observations:
             try:
                 csv_file.write(observation.get_values_comma_delimited() + '\n')
