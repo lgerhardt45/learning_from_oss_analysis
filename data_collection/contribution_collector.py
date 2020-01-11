@@ -27,7 +27,7 @@ def cache_contributor_stats_to_json(project_contributor_contributions: {}):
     if os.path.exists(cached_contributions_json_file_path):
         try:
             os.remove(cached_contributions_json_file_path)
-            print('removed old json file')
+            print('Removed "cached" contributor json file')
         except IOError:
             print('failed to remove old json file')
             return
