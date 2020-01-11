@@ -57,11 +57,10 @@ def get_single_user_query(user_name: str) -> str:
 
 def normalize(string: str) -> str:
     """ The Github GraphQL api doesn't allow queries with non-letters in non-string attributes,
-    such that 'user-name' throws an error
-    python does not have a str([char]) method"""
+    such that 'user-name' throws an error"""
     final = ''
     for char in string:
-        if char.isalpha():
+        if char.isalnum():
             final += char
     return final
 
