@@ -2,13 +2,14 @@ from data_collection.api.api import API
 from data_collection.model.observation import Observation
 
 
-def project_in_domain(repo_languages: [], domain: str) -> bool:
+def project_in_domain(repo_languages: [], repo_topics: [], domain: str) -> bool:
     """ checks whether the domain is in the developer repo's languages to determine
     whether a project is in the domain (i.e. written in the same language
     as the developer contributed to). """
-    languages_in_lower = [lang.lower() for lang in repo_languages]
-    if domain in languages_in_lower:
-        return True
+    repo_domains_lower = [repo_domain.lower() for repo_domain in repo_languages + repo_topics]  # [str]
+    for repo_domain in repo_domains_lower:
+        if domain in repo_domain:  # checks string in string for the case of topic = 'swift4', domain = 'swift'
+            return True
     return False
 
 
@@ -42,6 +43,13 @@ def get_single_user_query(user_name: str) -> str:
                 languages(first: 3) {
                   nodes {
                     name
+                  }
+                }
+                repositoryTopics(first: 5) {
+                  nodes {
+                    topic {
+                      name
+                    }
                   }
                 }
                 stargazers {
@@ -105,11 +113,21 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
             # now check for name, programming languages and number of stars of project
             for repo in repositories:  # is a list (all user repositories with name, languages, stargazers)
                 repository_name = repo['name']
+
+                # domain in main repo languages
                 repository_languages = repo['languages']['nodes']  # is a list of dicts: [{'name': Swift}]
                 repository_languages_list = [lang_dict['name'] for lang_dict in repository_languages]
 
-                # HERE WE GO: CHECK WHETHER DOMAIN IN LANGUAGES
-                if project_in_domain(repo_languages=repository_languages_list, domain=domain):
+                # domain in main repo topics
+                repository_topics = repo['repositoryTopics']['nodes']
+                repository_topics_list = []
+                if repository_topics:  # not empty
+                    print(repository_topics)
+                    repository_topics_list = [topic_dict['topic']['name'] for topic_dict in repository_topics]
+
+                # HERE WE GO: CHECK WHETHER DOMAIN IN LANGUAGES OR TOPICS
+                if project_in_domain(repo_languages=repository_languages_list,
+                                     repo_topics=repository_topics_list, domain=domain):
 
                     # THAT'S THE ONE!
                     repository_stargazers = repo['stargazers']['totalCount']
