@@ -21,6 +21,20 @@ def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str:
     return repo_contributor_contributions
 
 
+def cache_contributor_stats_to_json(project_contributor_contributions: {}):
+    import os
+    cached_contributions_json_file_path: str = 'domain_contributors_contributions.json'
+    if os.path.exists(cached_contributions_json_file_path):
+        try:
+            os.remove(cached_contributions_json_file_path)
+            print('removed old json file')
+        except IOError:
+            print('failed to remove old json file')
+            return
+    with open(cached_contributions_json_file_path, mode='a') as output_json:
+        output_json.write(json.dumps(project_contributor_contributions, indent=4, sort_keys=False))
+
+
 def collect_contribution_data(oss_repos_file_path: str, api_client: API) -> {}:
     """ reads the specified projects from `oss_repos_file_path` and gets their contributors'
     contribution counts (number of commits to repo)
@@ -55,4 +69,5 @@ def collect_contribution_data(oss_repos_file_path: str, api_client: API) -> {}:
                 contributors=stats_contributor_nr_commits
             )
 
+        cache_contributor_stats_to_json(project_contributor_contributions=project_contributors)
         return project_contributors
