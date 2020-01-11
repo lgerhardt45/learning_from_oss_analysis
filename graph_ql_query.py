@@ -161,6 +161,6 @@ class GraphQLQuerying:
 
 
 if __name__ == '__main__':
-    with open(util.json_file_path) as data_json:
+    with open(util.cached_contributions_json_file_path) as data_json:
         domain_contributors_contributions = json.load(data_json)
         GraphQLQuerying(domain_contributor_contributions=domain_contributors_contributions).run()
