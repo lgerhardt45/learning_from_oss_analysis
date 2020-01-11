@@ -1,4 +1,3 @@
-import requests
 from pprint import pprint
 
 from api.api import API
