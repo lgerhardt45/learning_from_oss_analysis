@@ -14,7 +14,7 @@ def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str:
         base_url=util.github_v3_api_base_url, repo_owner=repo_owner, repo_name=repo_name)
 
     # the top 100 contributors to the repo
-    contributors = api_client.get(stats_contributors_url).json()
+    contributors = api_client.get_v3(stats_contributors_url).json()
     repo_contributor_contributions = {}
     for contributor in contributors:
         contributor_name = contributor['author']['login']

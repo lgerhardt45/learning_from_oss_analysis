@@ -9,9 +9,9 @@ class API:
     def __init__(self, api_token: str):
         self._api_token = api_token
 
-    def get(self, url: str):
+    def get_v3(self, url: str):
         """
-        making GET requests adding authorization header
+        making GET requests to Github's v3 API (https://api.github.com) adding authorization header
         :returns the full response from `requests.get()`
         """
         response = requests.get(url=url, headers={'Authorization': 'token %s' % self._api_token})
