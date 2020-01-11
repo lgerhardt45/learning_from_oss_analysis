@@ -30,7 +30,7 @@ def main():
     )
 
     observations: [Observation] = contributor_details_collector.collect_contributor_details(
-        domain_contributor_contributions=oss_contributions
+        domain_contributor_contributions=oss_contributions, api_client=api
     )
     csv_writer.export_observations_to_csv(observations=observations, output_file_path=output_file_path)
     print('done!')
