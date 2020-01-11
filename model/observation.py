@@ -3,18 +3,21 @@ import json
 
 class Observation:
     def __init__(self,
+                 user_name: str,
                  average_stars: float,
                  nr_of_commits_to_project: int,
                  nr_of_projects_in_domain: int,
+                 nr_of_projects_in_total: int,
                  employed_at_domain_owner: bool,
                  has_project_in_domain: bool,
                  domain_name: str,
                  domain_owner: str):
+        self.user_name: str = user_name
         self.average_stars: float = average_stars
         self.domain_contribution: int = nr_of_commits_to_project
         self.nr_projects_in_domain: int = nr_of_projects_in_domain
+        self.nr_of_projects_in_total: int = nr_of_projects_in_total
         self.employed_at_domain_owner: int = 1 if employed_at_domain_owner else 0
-        self.has_project_in_domain: int = 1 if has_project_in_domain else 0
         self.domain = domain_name
         self.domain_owner = domain_owner
 
