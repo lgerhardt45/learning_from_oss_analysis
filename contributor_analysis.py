@@ -4,6 +4,7 @@ import sys
 from itertools import islice
 import requests
 
+import util as util
 from model.observation import Observation
 
 
@@ -18,6 +19,7 @@ class ContributorAnalysis:
     _output_file_path: str
     _slice_amount: int
     _github_base_url: str
+    _project_contributors: {str: [{str: str}]} = {}
 
     def __init__(self):
         self._github_base_url = 'https://api.github.com'
@@ -31,9 +33,11 @@ class ContributorAnalysis:
             config_json = json.load(config)
             # api_token for authorization
             self._api_token = config_json['api_token']
+            util.api_token = self._api_token
             # only first n observations for debugging purposes
             self._slice_amount = config_json['debug_slice_amount']
             # setup output file
+            self._output_file_path = config_json['output_file_name']
             self.setup_output_file()
         print('done setting up')
 
@@ -65,6 +69,17 @@ class ContributorAnalysis:
             print('failed to write %s to %s' % (repr(observation), self._output_file_path))
             self.tear_down()
 
+    def save_contributor_stats_to_json(self):
+        if os.path.exists(util.json_file_path):
+            try:
+                os.remove(util.json_file_path)
+                print('removed old json file')
+            except IOError:
+                print('failed to remove old json file')
+                return
+        with open(util.json_file_path, mode='a') as output_json:
+            output_json.write(json.dumps(self._project_contributors, indent=4, sort_keys=False))
+
     def tear_down(self):
         print('tearing down')
         if os.path.exists(self._output_file_path):
@@ -85,18 +100,6 @@ class ContributorAnalysis:
         return response
 
     # DATA COLLECTION METHODS
-    def user_is_public_member_of_org(self, user_id: str, organization_id: str) -> bool:
-        """ via GET /orgs/:org/public_members/:username"""
-
-        public_membership_url = '{base_url}/orgs/{org}/public_members/{user_name}'.format(
-            base_url=self._github_base_url, org=organization_id, user_name=user_id
-        )
-        # https://developer.github.com/v3/orgs/members/#check-public-membership
-        # returns with 204 if user is public member, 404 otherwise
-        is_public_member_response = self.get(public_membership_url)
-
-        return True if is_public_member_response.status_code == 204 else False
-
     def get_stats_contributors(self, repo_owner: str, repo_name: str) -> {str: int}:
         """
         via GET /repos/:owner/:repo/stats/contributors
@@ -107,88 +110,30 @@ class ContributorAnalysis:
 
         # the top 100 contributors to the repo
         contributors = self.get(stats_contributors_url).json()
-
-        return {contributor['author']['login']: contributor['total'] for contributor in contributors}
-
-    def get_observation_entity(self, user_name: str, domain_name: str, organization_name: str,
-                               no_contributor_commits: int):
-        """
-        via GET /users/:username/repos -> returns a list of dicts
-        collects the necessary information for an Observation
-        """
-
-        # get all repos of a contributor
-        contributor_repos_url = '{base_url}/users/{user_name}/repos'.format(
-            base_url=self._github_base_url, user_name=user_name
-        )
-        contributor_repos = self.get(contributor_repos_url).json()
-
-        # number of stars on repo
-        total_stargazers = 0
-        # counter for projects with that language/ framework
-        total_projects_in_domain = 0
-        # is user employed at company
-        employed_at_project_owner = self.user_is_public_member_of_org(
-            user_id=user_name, organization_id=organization_name
-        )
-
-        repo_names = [repo['name'] for repo in contributor_repos]
-        print('checking repos {user_name}/{repo_names}'.format(
-            user_name=user_name, repo_names=repo_names
-        ))
-
-        for contributor_repo in contributor_repos:
-            language = None  # the repo's main programming language
-            topics = [str]  # the project's (self assigned) topics that commonly represent the used framework
-
-            if 'topic' in contributor_repo.keys():  # if project has no topic, key doesn't exist
-                topics = (topic.lower() for topic in contributor_repo['topics'])
-            if contributor_repo['language'] is not None:
-                language = contributor_repo['language'].lower()
-
-            # contributor's project is in the domain? (written in the oss language or with the oss framework)
-            if (domain_name is language and language is not None) or domain_name in topics:
-                total_projects_in_domain += 1
-                total_stargazers += contributor_repo['stargazers_count']
-
-        observation = Observation(
-            average_stars=0 if total_projects_in_domain == 0 else total_stargazers / total_projects_in_domain,
-            nr_of_commits_to_project=no_contributor_commits,
-            nr_of_projects_in_domain=total_projects_in_domain,
-            employed_at_domain_owner=employed_at_project_owner,
-            has_project_in_domain=True if total_projects_in_domain > 0 else False,
-            domain_name=domain_name,
-            domain_owner=organization_name)
-        print(repr(observation))
-        return observation
+        repo_contributor_contributions = {}
+        for contributor in contributors:
+            contributor_name = contributor['author']['login']
+            repo_contributor_contributions[contributor_name] = contributor['total']
+        return repo_contributor_contributions
 
     def run(self):
-        self.setup()
-
         with open('repos.json') as repos_json:
             data = json.load(repos_json)
 
             # for each of the selected projects (in repos.json)
             for project in data.values():
-                repo_name = project['repo_name']  # e.g. 'apple/swift'
-                repo_owner = project['owner']  # e.g. 'swift' -> used to check for language/ topic in github projects
+                repo_owner = project['owner']     # e.g. 'flutter'
+                repo_name = project['repo_name']  # e.g. 'flutter'
+                domain = project['domain']        # e.g. 'dart' -> the actual language used in other projects
+                company = project['company']      # e.g. 'google'
+
                 print('repository:', '{}/{}'.format(repo_owner, repo_name))
 
                 # get top 100 contributors of domain repo and the number of their commits to it
                 stats_contributor_nr_commits = self.get_stats_contributors(repo_owner=repo_owner, repo_name=repo_name)
+                self._project_contributors[domain] = dict(
+                    repo_owner=repo_owner, repo_name=repo_name, domain=domain, company=company,
+                    contributors=stats_contributor_nr_commits
+                )
 
-                # get data on contributors' repositories
-                for contributor_id, nr_commits in take(self._slice_amount, stats_contributor_nr_commits.items()):
-                    observation = self.get_observation_entity(user_name=contributor_id,
-                                                              domain_name=repo_name,
-                                                              organization_name=repo_owner,
-                                                              no_contributor_commits=nr_commits)
-                    # write to output csv
-                    self.export_observation_to_csv(observation=observation)
-
-        print('done, opening output file...')
-        os.system('open %s' % self._output_file_path)
-
-
-if __name__ == '__main__':
-    ContributorAnalysis().run()
+            self.save_contributor_stats_to_json()
