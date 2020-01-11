@@ -16,7 +16,8 @@ def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str:
     repo_contributor_contributions = {}
     for contributor in contributors:
         contributor_name: str = contributor['author']['login']
-        if not contributor_name.endswith('[bot]'):
+        # no bots and no users with only digits as user_name (the api doesn't like that)
+        if not (contributor_name.endswith('[bot]') or contributor_name.isdigit()):
             repo_contributor_contributions[contributor_name] = contributor['total']
     return repo_contributor_contributions
 
