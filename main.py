@@ -1,9 +1,10 @@
 import json
 
 from util import util
+from model.observation import Observation
+import contributor_details_collector
 import contribution_collector
-from csv_writer import CSVWriter
-import util as util
+import csv_writer
 
 
 def setup(self):
@@ -21,7 +22,9 @@ def setup(self):
 
 def main():
     oss_contributions: {} = contribution_collector.collect_contribution_data(oss_repos_file_path='oss_repos.json')
-    CSVWriter().run
+    observations: [Observation] = contributor_details_collector.collect_contributor_details(
+        domain_contributor_contributions=oss_contributions
+    )
 
 
 if __name__ == '__main__':
