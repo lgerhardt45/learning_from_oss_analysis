@@ -6,7 +6,7 @@ def project_in_domain(repo_languages: [], repo_topics: [], domain: str) -> bool:
     """ checks whether the domain is in the developer repo's languages to determine
     whether a project is in the domain (i.e. written in the same language
     as the developer contributed to). """
-    repo_domains_lower = [repo_domain.lower() for repo_domain in repo_languages + repo_topics]  # [str]
+    repo_domains_lower = [repo_domain.lower().replace(" ", "") for repo_domain in repo_languages + repo_topics]  # [str]
     for repo_domain in repo_domains_lower:
         if domain in repo_domain:  # checks string in string for the case of topic = 'swift4', domain = 'swift'
             return True
@@ -122,7 +122,6 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
                 repository_topics = repo['repositoryTopics']['nodes']
                 repository_topics_list = []
                 if repository_topics:  # not empty
-                    print(repository_topics)
                     repository_topics_list = [topic_dict['topic']['name'] for topic_dict in repository_topics]
 
                 # HERE WE GO: CHECK WHETHER DOMAIN IN LANGUAGES OR TOPICS
