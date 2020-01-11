@@ -52,5 +52,29 @@
     "repo_name": "jquery",
     "domain": "jquery",
     "company": "---"
+  },
+  "angular": {
+    "owner": "angular",
+    "repo_name": "angular",
+    "domain": "angular",
+    "company": "---"
+  },
+  "vue": {
+    "owner": "vuejs",
+    "repo_name": "vue",
+    "domain": "vue",
+    "company": "---"
+  },
+  "rust": {
+    "owner": "rust-lang",
+    "repo_name": "rust",
+    "domain": "rust",
+    "company": "---"
+  },
+  "ruby_on_rails": {
+    "owner": "rails",
+    "repo_name": "rails",
+    "domain": "rails",
+    "company": "---"
   }
 }
