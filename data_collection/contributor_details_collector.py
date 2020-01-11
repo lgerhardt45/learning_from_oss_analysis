@@ -84,13 +84,12 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
     observations = []  # each user is an observation if applicable
 
     # go over each oss project
-    for project, project_data in list(domain_contributor_contributions.items()):
+    for project, project_data in domain_contributor_contributions:
         print('Getting observations for domain: %s' % project)
 
         # the query is still done with non-normalized (see normalize()) usernames to get right user details
         user_queries = prepare_query(project_data=project_data)
         result = api_client.post_v4_query(user_queries)  # execute the query
-        # pprint(result)
         user_query_data = result['data']
 
         # the information about domain, company name and the number of contributions
