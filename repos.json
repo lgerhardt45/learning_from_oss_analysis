@@ -1,10 +1,20 @@
 {
   "swift":  {
+    "owner": "apple",
     "repo_name": "swift",
-    "owner": "apple"
+    "domain": "swift",
+    "company": "apple"
+  },
+  "kotlin": {
+    "owner": "JetBrains",
+    "repo_name": "kotlin",
+    "domain": "kotlin",
+    "company": "JetBrains"
   },
   "flutter": {
+    "owner": "flutter",
     "repo_name": "flutter",
-    "owner": "flutter"
+    "domain": "dart",
+    "company": "google"
   }
 }
