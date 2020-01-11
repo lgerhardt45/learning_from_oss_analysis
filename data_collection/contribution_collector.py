@@ -15,8 +15,9 @@ def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str:
     contributors = api_client.get_v3(stats_contributors_url).json()
     repo_contributor_contributions = {}
     for contributor in contributors:
-        contributor_name = contributor['author']['login']
-        repo_contributor_contributions[contributor_name] = contributor['total']
+        contributor_name: str = contributor['author']['login']
+        if not contributor_name.endswith('[bot]'):
+            repo_contributor_contributions[contributor_name] = contributor['total']
     return repo_contributor_contributions
 
 
