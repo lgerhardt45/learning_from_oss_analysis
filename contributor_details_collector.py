@@ -1,6 +1,7 @@
 import requests
 from pprint import pprint
 
+from api.api import API
 from model.observation import Observation
 
 
@@ -66,21 +67,7 @@ def normalize(string: str) -> str:
     return final
 
 
-def run_query(query):
-    """ A simple function to use requests.post to make the API call. Note the json= section. """
-    headers = {"Authorization": "bearer %s" % util.api_token}
-    actual_query = '{' + query + '}'
-    request = requests.post('https://api.github.com/graphql', json={'query': actual_query}, headers=headers)
-    if request.status_code == 200 and 'errors' not in request.json().keys():
-        return request.json()
-    else:
-        raise Exception(
-            'Query failed to run (code of {code}). \nErrors: {errors}. \nQuery: {query}.'.format(
-                code=request.status_code, errors=request.json()['errors'], query=actual_query)
-        )
-
-
-def collect_contributor_details(domain_contributor_contributions: {}):
+def collect_contributor_details(domain_contributor_contributions: {}, api_client: API):
     observations = []  # each user is an observation if applicable
 
     # go over each oss project
@@ -88,7 +75,7 @@ def collect_contributor_details(domain_contributor_contributions: {}):
         print('Getting observations from project: %s' % project)
 
         user_queries = prepare_query(project_data=project_data)
-        result = run_query(user_queries)  # Execute the query
+        result = api_client.post_v4_query(user_queries)  # Execute the query
         pprint(result)
         user_query_data = result['data']
 
