@@ -8,7 +8,7 @@ def export_observations_to_csv(observations: [Observation], output_file_path: st
     if not observations:
         raise Exception('No observations found.')
     _setup_output_file(sample_observation=observations[0], output_file_path=output_file_path)
-    _write_observations_to_csv(observations=observations)
+    _write_observations_to_csv(observations=observations, output_file_path=output_file_path)
 
 
 def _setup_output_file(sample_observation: Observation, output_file_path: str):
@@ -31,12 +31,12 @@ def _setup_output_file(sample_observation: Observation, output_file_path: str):
             sys.exit(1)
 
 
-def _write_observations_to_csv(observations: [Observation]):
+def _write_observations_to_csv(observations: [Observation], output_file_path: str):
     with open(output_file_path, mode='a') as csv_file:
         for observation in observations:
             try:
                 csv_file.write(observation.get_values_comma_delimited() + '\n')
             except IOError as ioe:
-                print('failed to write %s to %s' % (repr(observation), util.output_file_path))
+                print('failed to write %s to %s' % (repr(observation), output_file_path))
                 print(ioe)
                 sys.exit(1)
