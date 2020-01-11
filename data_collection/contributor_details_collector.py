@@ -85,7 +85,7 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
 
     # go over each oss project
     for project, project_data in list(domain_contributor_contributions.items()):
-        print('Getting observations from project: %s' % project)
+        print('Getting observations for domain: %s' % project)
 
         # the query is still done with non-normalized (see normalize()) usernames to get right user details
         user_queries = prepare_query(project_data=project_data)
