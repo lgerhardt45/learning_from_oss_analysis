@@ -3,6 +3,8 @@ import json
 from pprint import pprint
 import sys
 import util as util
+
+from util import util
 from model.observation import Observation
 
 

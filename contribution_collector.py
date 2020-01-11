@@ -1,7 +1,7 @@
 import json
 import requests
 
-import util as util
+from util import util
 
 
 def get(url: str):
