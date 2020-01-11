@@ -19,7 +19,7 @@ def setup(self):
 
 
 def main():
-    contribution_collector.collect_contribution_data()
+    oss_contributions: {} = contribution_collector.collect_contribution_data(oss_repos_file_path='oss_repos.json')
     CSVWriter().run
 
 

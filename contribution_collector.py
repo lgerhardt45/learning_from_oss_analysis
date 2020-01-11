@@ -1,5 +1,4 @@
 import json
-import os
 import requests
 
 import util as util
@@ -35,13 +34,13 @@ def get_stats_contributors(repo_owner: str, repo_name: str) -> {str: int}:
     return repo_contributor_contributions
 
 
-def collect_contribution_data() -> {}:
-    with open('repos.json') as repos_json:
+def collect_contribution_data(oss_repos_file_path: str) -> {}:
+    with open(oss_repos_file_path) as repos_json:
         data = json.load(repos_json)
 
         project_contributors = {}
 
-        # for each of the selected projects (in repos.json)
+        # for each of the selected projects (in oss_repos.json)
         for project in data.values():
             repo_owner = project['owner']     # e.g. 'flutter'
             repo_name = project['repo_name']  # e.g. 'flutter'
