@@ -56,5 +56,4 @@ def collect_contribution_data(oss_repos_file_path: str) -> {}:
                 contributors=stats_contributor_nr_commits
             )
 
-        util.cache_contributor_stats_to_json(project_contributor_contributions=project_contributors)
         return project_contributors
