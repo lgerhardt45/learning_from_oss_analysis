@@ -16,5 +16,41 @@
     "repo_name": "flutter",
     "domain": "dart",
     "company": "google"
+  },
+  "react": {
+    "owner": "facebook",
+    "repo_name": "react",
+    "domain": "react",
+    "company": "facebook"
+  },
+  "node": {
+    "owner": "nodejs",
+    "repo_name": "node",
+    "domain": "node",
+    "company": "---"
+  },
+  "gatsbyjs": {
+    "owner": "gatsbyjs",
+    "repo_name": "gatsby",
+    "domain": "gatsby",
+    "company": "gatsby"
+  },
+  "babel": {
+    "owner": "babel",
+    "repo_name": "babel",
+    "domain": "babel",
+    "company": "---"
+  },
+  "vscode": {
+    "owner": "microsoft",
+    "repo_name": "vscode",
+    "domain": "vscode",
+    "company": "microsoft"
+  },
+  "jquery": {
+    "owner": "jquery",
+    "repo_name": "jquery",
+    "domain": "jquery",
+    "company": "---"
   }
 }
