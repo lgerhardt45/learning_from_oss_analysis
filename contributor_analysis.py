@@ -1,17 +1,8 @@
 import json
 import os
-import sys
-from itertools import islice
 import requests
 
 import util as util
-from model.observation import Observation
-
-
-# helper methods
-def take(n, iterable):
-    """ Return first n items of the iterable as a list """
-    return list(islice(iterable, n))
 
 
 class ContributorAnalysis:
@@ -51,12 +42,6 @@ class ContributorAnalysis:
                 return
         with open(util.json_file_path, mode='a') as output_json:
             output_json.write(json.dumps(self._project_contributors, indent=4, sort_keys=False))
-
-    def tear_down(self):
-        print('tearing down')
-        if os.path.exists(self._output_file_path):
-            os.remove(self._output_file_path)
-            print('output file %s removed' % self._output_file_path)
 
     def get(self, url: str):
         """
