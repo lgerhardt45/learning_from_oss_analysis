@@ -38,36 +38,8 @@ class ContributorAnalysis:
             self._slice_amount = config_json['debug_slice_amount']
             # setup output file
             self._output_file_path = config_json['output_file_name']
-            self.setup_output_file()
         print('done setting up')
 
-    def setup_output_file(self):
-        print('setting up output file')
-        if os.path.exists(self._output_file_path):
-            try:
-                os.remove(self._output_file_path)
-                print('removed old output file')
-            except IOError:
-                print('failed to remove old output file')
-                return
-
-        with open(self._output_file_path, mode='a') as csv:
-            try:
-                # write header
-                sample_observation_for_header = Observation(0.0, 0, 0, False, False, '', '')
-                csv.write(sample_observation_for_header.get_attribute_names_comma_delimited() + '\n')
-            except IOError:
-                print('Cannot write to output file')
-                sys.exit(1)
-
-    def export_observation_to_csv(self, observation: Observation):
-        try:
-            with open(self._output_file_path, mode='a') as csv:
-                csv.write(observation.get_values_comma_delimited() + '\n')
-        except IOError as e:
-            print(e)
-            print('failed to write %s to %s' % (repr(observation), self._output_file_path))
-            self.tear_down()
 
     def save_contributor_stats_to_json(self):
         if os.path.exists(util.json_file_path):
