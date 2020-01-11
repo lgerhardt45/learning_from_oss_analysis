@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from api.api import API
 from model.observation import Observation
 
@@ -56,9 +54,11 @@ def get_single_user_query(user_name: str) -> str:
 
 
 def normalize(string: str) -> str:
-    """ The Github GraphQL api doesn't allow queries with non-letters in non-string attributes,
-    such that 'user-name' throws an error"""
+    """ The Github GraphQL api doesn't allow to identify sub-queries with non-letters
+    or starting with a number in non-string attributes, such that 'user-name' or '4username' fails"""
     final = ''
+    if string[0].isnumeric():
+        string = string[1:]
     for char in string:
         if char.isalnum():
             final += char
@@ -72,15 +72,17 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
     for project, project_data in list(domain_contributor_contributions.items()):
         print('Getting observations from project: %s' % project)
 
+        # the query is still done with non-normalized (see normalize()) usernames to get right user details
         user_queries = prepare_query(project_data=project_data)
-        result = api_client.post_v4_query(user_queries)  # Execute the query
-        pprint(result)
+        result = api_client.post_v4_query(user_queries)  # execute the query
+        # pprint(result)
         user_query_data = result['data']
 
         # the information about domain, company name and the number of contributions
         domain = project_data['domain']
         company = project_data['company']
-        # the usernames had to be normalized for the query
+
+        # the usernames had to be normalized for the query (see above)
         # so they are normalized for the number of contributions-lookup here
         user_contributions = {normalize(key): value for key, value in project_data['contributors'].items()}
 
@@ -101,7 +103,8 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
 
                 # HERE WE GO: CHECK WHETHER DOMAIN IN LANGUAGES
                 if project_in_domain(repo_languages=repository_languages_list, domain=domain):
-                    print('Found repo within domain: %s by %s 🥰' % (repository_name, user))
+
+                    # THAT'S THE ONE!
                     repository_stargazers = repo['stargazers']['totalCount']
                     total_nr_of_repos_in_domain += 1
                     total_nr_of_stars_on_domain_repos += repository_stargazers
@@ -134,8 +137,4 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
 
         # end of each user of project
     # end of each project
-    print('%s observations in %s projects found:' % (
-        len(observations), len(domain_contributor_contributions)
-    ))
-    for obs in observations:
-        print(obs)
+    return observations
