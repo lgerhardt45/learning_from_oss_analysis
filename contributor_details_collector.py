@@ -6,8 +6,9 @@ from model.observation import Observation
 
 
 def project_in_domain(repo_languages: [], domain: str) -> bool:
-    """ returns True, if the domain is in the repo languages i.e. the user has an
-     own project in the domain of the oss project """
+    """ checks whether the domain is in the developer repo's languages to determine
+    whether a project is in the domain (i.e. written in the same language
+    as the developer contributed to). """
     languages_in_lower = [lang.lower() for lang in repo_languages]
     if domain in languages_in_lower:
         return True
@@ -30,11 +31,11 @@ def prepare_query(project_data: dict):
     user_queries = ''
     for user in users:
         # The GraphQL query (with a few additional bits included) itself defined as a multi-line string.
-        user_queries += get_user_query(user)
+        user_queries += get_single_user_query(user)
     return user_queries
 
 
-def get_user_query(user_name: str) -> str:
+def get_single_user_query(user_name: str) -> str:
     return """%s: user(login: "%s") {
             company
             repositories(last: 10, isFork: false, ownerAffiliations: OWNER) {
@@ -75,15 +76,15 @@ def run_query(query):
         return request.json()
     else:
         raise Exception(
-            'Query failed to run (code of {code}). \nErrors: {errors}. \nQuery: {query}.'
-                .format(code=request.status_code, errors=request.json()['errors'], query=actual_query)
+            'Query failed to run (code of {code}). \nErrors: {errors}. \nQuery: {query}.'.format(
+                code=request.status_code, errors=request.json()['errors'], query=actual_query)
         )
 
 
 def collect_contributor_details(domain_contributor_contributions: {}):
     observations = []  # each user is an observation if applicable
 
-    # each project
+    # go over each oss project
     for project, project_data in list(domain_contributor_contributions.items()):
         print('Getting observations from project: %s' % project)
 
@@ -134,6 +135,7 @@ def collect_contributor_details(domain_contributor_contributions: {}):
                 average_stars_on_domain_repos = total_nr_of_stars_on_domain_repos / total_nr_of_repos_in_domain
                 nr_of_contributions_to_domain_project = user_contributions[user]
                 total_nr_of_repos = user_value['repositories']['totalCount']
+
                 observation = Observation(
                     user_name=user,
                     average_stars=average_stars_on_domain_repos,
@@ -145,9 +147,11 @@ def collect_contributor_details(domain_contributor_contributions: {}):
                     domain_owner=company,
                 )
                 observations.append(observation)
+
         # end of each user of project
     # end of each project
-    print(
-        '%s observations in %s projects found:' % (len(observations), len(domain_contributor_contributions)))
+    print('%s observations in %s projects found:' % (
+        len(observations), len(domain_contributor_contributions)
+    ))
     for obs in observations:
         print(obs)
