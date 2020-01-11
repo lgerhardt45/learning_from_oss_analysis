@@ -9,7 +9,6 @@ import csv_writer
 
 def setup():
     """ :returns the api client configured with the api token"""
-    print('setting up')
 
     # get config
     with open('config.json') as config:
@@ -18,7 +17,6 @@ def setup():
         api_token = config_json['api_token']  # for Github API authorization
         api = API(api_token=api_token)
         output_file_path = config_json['output_file_name']
-        print('done setting up')
         return api, output_file_path
 
 
@@ -36,7 +34,7 @@ def main():
         len(observations), len(oss_contributions)
     ))
     csv_writer.export_observations_to_csv(observations=observations, output_file_path=output_file_path)
-    print('done!')
+    print('Done!')
 
 
 if __name__ == '__main__':
