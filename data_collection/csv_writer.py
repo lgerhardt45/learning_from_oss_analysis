@@ -1,7 +1,7 @@
 import os
 import sys
 
-from model.observation import Observation
+from data_collection.model.observation import Observation
 
 
 def export_observations_to_csv(observations: [Observation], output_file_path: str):

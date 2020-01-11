@@ -1,6 +1,6 @@
 import json
 
-from api.api import API
+from data_collection.api.api import API
 
 
 def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str: int}:
@@ -42,8 +42,7 @@ def collect_contribution_data(oss_repos_file_path: str, api_client: API) -> {}:
             domain = project['domain']        # e.g. 'dart' -> the actual language used in other projects
             company = project['company']      # e.g. 'google'
 
-            print('Getting contributor contribution counts for...')
-            print('... repository:', '{}/{}'.format(repo_owner, repo_name))
+            print('Getting contributor contribution counts for', '{}/{}'.format(repo_owner, repo_name))
 
             # get top 100 contributors of domain repo and the number of their commits to it
             stats_contributor_nr_commits = get_stats_contributors(

@@ -17,7 +17,6 @@ class API:
 
         full_url = self._github_v3_api_base_url + url
         response = requests.get(url=full_url, headers={'Authorization': 'token %s' % self._api_token})
-        print('Getting %s, response code: %i' % (url, response.status_code))
         if not response:
             print('Failed request: %s' % response.json())
 

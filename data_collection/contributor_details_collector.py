@@ -1,5 +1,5 @@
-from api.api import API
-from model.observation import Observation
+from data_collection.api.api import API
+from data_collection.model.observation import Observation
 
 
 def project_in_domain(repo_languages: [], domain: str) -> bool:
@@ -66,6 +66,13 @@ def normalize(string: str) -> str:
 
 
 def collect_contributor_details(domain_contributor_contributions: {}, api_client: API):
+    """
+    Uses Github's v4 API with GraphQL to lookup the last 10 own repos of the contributors.
+    If the user does not work at the oss sponsoring company and has at least one project of which
+    the main programming language is equal to the domain (i.e. the oss language), he is added as an
+    `Observation`
+    """
+
     observations = []  # each user is an observation if applicable
 
     # go over each oss project

@@ -1,10 +1,8 @@
 import json
 
-from api.api import API
-from model.observation import Observation
-import contributor_details_collector
-import contribution_collector
-import csv_writer
+from data_collection.api.api import API
+from data_collection.model.observation import Observation
+from data_collection import contribution_collector, contributor_details_collector, csv_writer
 
 
 def setup():
@@ -24,7 +22,7 @@ def main():
     api, output_file_path = setup()
 
     oss_contributions: {} = contribution_collector.collect_contribution_data(
-        oss_repos_file_path='oss_repos.json', api_client=api
+        oss_repos_file_path='data_collection/oss_repos.json', api_client=api
     )
 
     observations: [Observation] = contributor_details_collector.collect_contributor_details(
