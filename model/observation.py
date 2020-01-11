@@ -9,7 +9,6 @@ class Observation:
                  nr_of_projects_in_domain: int,
                  nr_of_projects_in_total: int,
                  employed_at_domain_owner: bool,
-                 has_project_in_domain: bool,
                  domain_name: str,
                  domain_owner: str):
         self.user_name: str = user_name
