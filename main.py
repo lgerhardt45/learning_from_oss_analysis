@@ -1,6 +1,6 @@
 import json
 
-import contributor_analysis
+import contribution_collector
 from csv_writer import CSVWriter
 import util as util
 
@@ -19,7 +19,7 @@ def setup(self):
 
 
 def main():
-    contributor_analysis.collect_contribution_data()
+    contribution_collector.collect_contribution_data()
     CSVWriter().run
 
 

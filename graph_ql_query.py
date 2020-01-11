@@ -25,7 +25,7 @@ def employed_at_domain_owner(company: str, user_company: str) -> bool:
 
 def prepare_query(project_data: dict):
     """ prepares the GraphQL query for the users of a project
-    :param project_data: the dict with all contributors for a project (as gathered in contributor_analysis.py)"""
+    :param project_data: the dict with all contributors for a project (as gathered in contribution_collector.py)"""
 
     users = list(project_data['contributors'].keys())
     user_queries = ''
