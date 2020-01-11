@@ -22,14 +22,26 @@ class Observation:
 
     def get_attribute_names_comma_delimited(self) -> str:
         """ returns all attribute names to be used for the header of the observations csv file"""
-        return ','.join(self.__dict__.keys())
+
+        # English decimal point/ separator system:
+        # return ','.join(self.__dict__.keys())
+        return ';'.join(self.__dict__.keys())
 
     def get_values_comma_delimited(self):
         """
         represents entity as comma-delimited string for writing to a csv file
-        decimal separator is '.'
+        decimal separator is ',', csv delimiter is ';' for the German system
         """
-        return ','.join([str(value) for value in self.__dict__.values()])
+        values = []
+        for value in self.__dict__.values():
+            if isinstance(value, float):
+                float_with_comma_as_decimal_separator = str(value).replace('.', ',')
+                value = float_with_comma_as_decimal_separator
+            values.append(str(value))
+
+        # English decimal point/ separator system:
+        # return ','.join([str(value] for value in self.__dict__.values())
+        return ';'.join(values)
 
     def __repr__(self):
         return '<Observation: %s>' % json.dumps(self.__dict__)
