@@ -8,8 +8,8 @@ def get_stats_contributors(repo_owner: str, repo_name: str, api_client) -> {str:
     via GET /repos/:owner/:repo/stats/contributors
     :returns a dictionary with key: user_name and value: number of commits to repo
     """
-    stats_contributors_url = '{base_url}/repos/{repo_owner}/{repo_name}/stats/contributors'.format(
-        base_url=util.github_v3_api_base_url, repo_owner=repo_owner, repo_name=repo_name)
+    stats_contributors_url = 'repos/{repo_owner}/{repo_name}/stats/contributors'.format(
+        repo_owner=repo_owner, repo_name=repo_name)
 
     # the top 100 contributors to the repo
     contributors = api_client.get_v3(stats_contributors_url).json()
