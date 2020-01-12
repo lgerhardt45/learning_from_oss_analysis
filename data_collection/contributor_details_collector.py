@@ -16,7 +16,9 @@ def project_in_domain(repo_languages: [], repo_topics: [], domain: str) -> bool:
 def employed_at_domain_owner(company: str, user_company: str) -> bool:
     """ returns True, if the user works at the domain owner
     companies are often marked as '@company'"""
-    if user_company in company.lower():
+    normalized_user_company = normalize(user_company).lower()
+    print('repo company: %s, user company: %s' % (company, normalized_user_company))
+    if normalized_user_company in company:
         return True
     return False
 
