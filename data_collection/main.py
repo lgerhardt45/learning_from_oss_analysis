@@ -14,7 +14,7 @@ def setup():
 
         api_token = config_json['api_token']  # for Github API authorization
         api = API(api_token=api_token)
-        output_file_path = config_json['output_file_name']
+        output_file_path = config_json['output_file_path']
         return api, output_file_path
 
 

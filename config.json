@@ -1,5 +1,4 @@
 {
-  "api_token": "",
-  "output_file_name": "observations.csv",
-  "debug_slice_amount": 3
+  "api_token": "YOUR API TOKEN HERE",
+  "output_file_path": "collected_data/observations_with_topics.csv"
 }
