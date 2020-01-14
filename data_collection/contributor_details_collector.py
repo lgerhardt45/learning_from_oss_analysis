@@ -83,10 +83,12 @@ def normalize(string: str) -> str:
             final += char
     return final
 
+
 def partition_list(items, count_per_partition=20):
     return [
-		items[i:i+count_per_partition] for i in range(0, len(items), count_per_partition)
-	]
+        items[i:i+count_per_partition] for i in range(0, len(items), count_per_partition)
+    ]
+
 
 def collect_contributor_details(domain_contributor_contributions: {}, api_client: API):
     """
@@ -178,5 +180,6 @@ def collect_contributor_details(domain_contributor_contributions: {}, api_client
                     observations.append(observation)
             # end of partitioned users (20 requests at a time)
         # end of each user of project
+        print('%i observations found for domain %s' % (len(observations), project))
     # end of each project
     return observations
