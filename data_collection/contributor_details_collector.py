@@ -46,7 +46,7 @@ def get_single_user_query(user_name: str) -> str:
                     name
                   }
                 }
-                repositoryTopics(first: 5) {
+                repositoryTopics(first: 10) {
                   nodes {
                     topic {
                       name
