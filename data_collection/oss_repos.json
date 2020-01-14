@@ -17,16 +17,107 @@
     "domain": "dart",
     "company": "google"
   },
+  "dart-language": {
+    "owner": "dart-lang",
+    "repo_name": "language",
+    "domain": "dart",
+    "company": "facebook"
+  },
+  "dart-sdk": {
+    "owner": "dart-lang",
+    "repo_name": "sdk",
+    "domain": "dart",
+    "company": "facebook"
+  },
+  "go-lang": {
+    "owner": "go-lang",
+    "repo_name": "go",
+    "domain": "go",
+    "company": "---"
+  },
+  "typescript": {
+    "owner": "microsoft",
+    "repo_name": "TypeScript",
+    "domain": "typescript",
+    "company": "microsoft"
+  },
+  "rust": {
+    "owner": "rust-lang",
+    "repo_name": "rust",
+    "domain": "rust",
+    "company": "---"
+  },
+  "python": {
+    "owner": "python",
+    "repo_name": "cpython",
+    "domain": "python",
+    "company": "---"
+  },
+  "php": {
+    "owner": "php",
+    "repo_name": "php-src",
+    "domain": "php",
+    "company": "---"
+  },
+  "julia": {
+    "owner": "JuliaLang",
+    "repo_name": "julia",
+    "domain": "julia",
+    "company": "---"
+  },
+  "powershell": {
+    "owner": "PowerShell",
+    "repo_name": "PowerShell",
+    "domain": "powershell",
+    "company": "microsoft"
+  },
+
   "react": {
     "owner": "facebook",
     "repo_name": "react",
     "domain": "react",
     "company": "facebook"
   },
+  "django": {
+    "owner": "django",
+    "repo_name": "django",
+    "domain": "django",
+    "company": "---"
+  },
   "node": {
     "owner": "nodejs",
     "repo_name": "node",
     "domain": "node",
+    "company": "---"
+  },
+  "spring-boot": {
+    "owner": "spring-projects",
+    "repo_name": "spring-boot",
+    "domain": "springboot",
+    "company": "---"
+  },
+  "spring": {
+    "owner": "spring-projects",
+    "repo_name": "spring-framework",
+    "domain": "spring",
+    "company": "---"
+  },
+  "ionic": {
+    "owner": "ionic-team",
+    "repo_name": "ionic",
+    "domain": "ionic",
+    "company": "---"
+  },
+  "tensorflow": {
+    "owner": "tensorflow",
+    "repo_name": "tensorflow",
+    "domain": "tensorflow",
+    "company": "---"
+  },
+  "aspnetcore": {
+    "owner": "dotnet",
+    "repo_name": "aspnetcore",
+    "domain": "aspnetcore",
     "company": "---"
   },
   "gatsbyjs": {
@@ -55,7 +146,7 @@
   },
   "angular": {
     "owner": "angular",
-    "repo_name": "angular",
+    "repo_name": "angular.js",
     "domain": "angular",
     "company": "---"
   },
@@ -65,16 +156,40 @@
     "domain": "vue",
     "company": "---"
   },
-  "rust": {
-    "owner": "rust-lang",
-    "repo_name": "rust",
-    "domain": "rust",
-    "company": "---"
-  },
   "ruby_on_rails": {
     "owner": "rails",
     "repo_name": "rails",
     "domain": "rails",
     "company": "---"
+  },
+  "graphql": {
+    "owner": "graphql",
+    "repo_name": "graphql-spec",
+    "domain": "graphql",
+    "company": "facebook"
+  },
+  "bootstrap": {
+    "owner": "twbs",
+    "repo_name": "bootstrap",
+    "domain": "bootstrap",
+    "company": "---"
+  },
+  "docker-compose": {
+    "owner": "docker",
+    "repo_name": "compose",
+    "domain": "docker",
+    "company": "docker"
+  },
+  "moby": {
+    "owner": "moby",
+    "repo_name": "moby",
+    "domain": "docker",
+    "company": "docker"
+  },
+  "spark": {
+    "owner": "apache",
+    "repo_name": "spark",
+    "domain": "spark",
+    "company": "apache"
   }
 }
