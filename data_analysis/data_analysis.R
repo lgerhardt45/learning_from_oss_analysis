@@ -15,9 +15,41 @@ summary(observations_dt)
 # number of observations
 nrow(observations_dt)
 
+# add total number of stars
+observations_dt[, total_nr_stars := average_stars*nr_projects_in_domain]
+observations_dt[, ln_total_nr_stars := log(average_stars*nr_projects_in_domain)]
+
+hist(observations_dt[, ln_total_nr_stars])
+
+# above 0 average stars
+observations_above_0_stars_dt <- observations_dt[average_stars > 0]
+observations_above_0_stars_dt[, ln_average_stars := log(average_stars)]
+nrow(observations_above_0_stars_dt)
+# linear model here
+lm_avg_stars_log = lm(ln_average_stars ~ 
+                    domain_contribution +
+                    nr_projects_in_domain + 
+                    nr_of_projects_in_total + 
+                    employed_at_domain_owner,
+                  data=observations_above_0_stars_dt)
+summary(lm_avg_stars)
+
+#
+lm_total_number_of_stars = lm(total_nr_stars ~ 
+                        domain_contribution +
+                        nr_projects_in_domain + 
+                        nr_of_projects_in_total + 
+                        employed_at_domain_owner,
+                      data=observations_dt)
+summary(lm_total_number_of_stars)
+
+# ln the average stars
+observations_dt[, ln_average_stars := log(average_stars)]
+hist(observations_dt[, ln_average_stars])
+
 # ratio of domain to non-domain projects of contributors
 observations_dt[, domain_repo_ratio := nr_projects_in_domain/nr_of_projects_in_total]
-mean(observations_dt[, domain_repo_ratio]) # ~0,25
+mean(observations_dt[, domain_repo_ratio]) # ~0,254
 
 # number of contributors working at domain owner sorted by domains (keep in mind not all projects are sponsored)
 employed_at_domain_owner <- observations_dt[employed_at_domain_owner == 1, .N, by = domain_owner]
@@ -33,11 +65,12 @@ stars_domain_contr_no_outliers = observations_dt[average_stars < 300, .(average_
 plot(stars_domain_contr_no_outliers[, .(average_stars, domain_contribution)])
 
 # linear models
+# average stars
 lm_avg_stars = lm(average_stars ~ 
                     domain_contribution +
                     nr_projects_in_domain + 
-                    nr_of_projects_in_total + 
-                    employed_at_domain_owner,
+                    nr_of_projects_in_total, # + 
+                    #employed_at_domain_owner,
                   data=observations_dt)
 summary(lm_avg_stars) #!! domain contribution positive but not significant
 
@@ -46,14 +79,9 @@ lm_avg_stars_limited = lm(average_stars ~
                       data=observations_dt)
 summary(lm_avg_stars_limited) # domain contribution negatively, not significant
 
-lm_domain_contribution = lm(domain_contribution ~
-                              average_stars +
-                              nr_projects_in_domain + 
-                              nr_of_projects_in_total + 
-                              employed_at_domain_owner,
-                            data=observations_dt)
-summary(lm_domain_contribution) # nr_projects_in_domain influences positively, significantly (wrong way round?)
+# total stars
 
+# nr projects in domain
 lm_nr_projects_in_domain = lm(nr_projects_in_domain ~
                                 domain_contribution + 
                                 nr_of_projects_in_total +
