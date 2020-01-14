@@ -131,6 +131,9 @@ dmypy.json
 # PyCharm
 .idea/
 
+# R Studio
+.R
+
 # Project specific
 observations*.csv
 domain_contributors_contributions.json
