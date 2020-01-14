@@ -17,8 +17,7 @@ def employed_at_domain_owner(company: str, user_company: str) -> bool:
     """ returns True, if the user works at the domain owner
     companies are often marked as '@company'"""
     normalized_user_company = normalize(user_company).lower()
-    print('repo company: %s, user company: %s' % (company, normalized_user_company))
-    if normalized_user_company in company:
+    if company.lower() in normalized_user_company:
         return True
     return False
 
