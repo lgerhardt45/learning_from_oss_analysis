@@ -62,12 +62,22 @@ def get_single_user_query(user_name: str) -> str:
           """ % (normalize(user_name), user_name)
 
 
+def remove_all_numerics_at_begin(string: str) -> str:
+    index = 0
+    for char in string:
+        if char.isnumeric():
+            index += 1
+        else:
+            break
+    return string[index:]
+
+
 def normalize(string: str) -> str:
     """ The Github GraphQL api doesn't allow to identify sub-queries with non-letters
     or starting with a number in non-string attributes, such that 'user-name' or '4username' fails"""
     final = ''
     if string[0].isnumeric():
-        string = string[1:]
+        string = remove_all_numerics_at_begin(string=string)
     for char in string:
         if char.isalnum():
             final += char
