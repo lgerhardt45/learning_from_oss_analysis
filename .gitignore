@@ -132,7 +132,7 @@ dmypy.json
 .idea/
 
 # R Studio
-.R
+.R*
 
 # Project specific
 observations*.csv
