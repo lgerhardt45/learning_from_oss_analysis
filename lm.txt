@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = total_nr_stars ~ domain_contribution + nr_projects_in_domain + 
+    nr_of_projects_in_total + employed_at_domain_owner, data = observations_dt)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -403.8  -122.5   -85.1   -64.9 15373.9 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)
+(Intercept)               58.61200   47.37009   1.237    0.216
+domain_contribution        0.02785    0.02852   0.976    0.329
+nr_projects_in_domain     11.35381    9.41602   1.206    0.228
+nr_of_projects_in_total    0.18128    0.84445   0.215    0.830
+employed_at_domain_owner 133.18865   84.01489   1.585    0.113
+
+Residual standard error: 702.7 on 834 degrees of freedom
+Multiple R-squared:  0.00681,	Adjusted R-squared:  0.002046 
+F-statistic:  1.43 on 4 and 834 DF,  p-value: 0.2222
+
