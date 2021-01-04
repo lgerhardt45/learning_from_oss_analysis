@@ -19,3 +19,4 @@ Residual standard error: 702.7 on 834 degrees of freedom
 Multiple R-squared:  0.00681,	Adjusted R-squared:  0.002046 
 F-statistic:  1.43 on 4 and 834 DF,  p-value: 0.2222
 
+One line to rule them all
